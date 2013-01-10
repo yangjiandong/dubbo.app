@@ -1,27 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
- - Copyright 1999-2011 Alibaba Group.
- -
- - Licensed under the Apache License, Version 2.0 (the "License");
- - you may not use this file except in compliance with the License.
- - You may obtain a copy of the License at
- -
- -      http://www.apache.org/licenses/LICENSE-2.0
- -
- - Unless required by applicable law or agreed to in writing, software
- - distributed under the License is distributed on an "AS IS" BASIS,
- - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- - See the License for the specific language governing permissions and
- - limitations under the License.
--->
+
 <beans xmlns="http://www.springframework.org/schema/beans"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
   http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
 
-  <bean id="demoService" class="org.ssh.dubbo.demo.provider.DemoServiceImpl" />
+  <description>Spring公共配置</description>
 
-  <dubbo:service interface="org.ssh.dubbo.demo.DemoService" ref="demoService" />
+  <!-- 定义受环境影响易变的变量 -->
+  <bean
+    class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+    <property name="ignoreResourceNotFound" value="true" />
+    <property name="locations">
+      <list>
+        <value>classpath*:/version.properties</value>
+        <!-- 标准配置 -->
+        <value>classpath*:/application.properties</value>
+        <!-- 本地开发环境配置 -->
+        <value>classpath*:/application.local.properties</value>
+        <!-- 服务器生产环境配置 CONFIG_DIR 为环境变量 -->
+        <value>file:///${SSH_CONFIG_DIR}/config/mobile.application.server.properties
+        </value>
+      </list>
+    </property>
+  </bean>
+
+  <!-- 多数据源 -->
+  <bean id="parentDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+    destroy-method="close">
+    <property name="driverClassName">
+      <value>${jdbc.driver}</value>
+    </property>
+    <property name="defaultAutoCommit" value="true" />
+  </bean>
+
+  <!-- 数据源配置,使用应用内的DBCP数据库连接池 -->
+  <bean id="defaultDataSource" parent="parentDataSource">
+    <!-- Connection Info -->
+    <property name="url" value="${jdbc.url}" />
+    <property name="username" value="${jdbc.username}" />
+    <property name="password" value="${jdbc.password}" />
+    <property name="defaultAutoCommit" value="true" />
+  </bean>
+  <bean id="dataSource" class="org.ssh.pm.orm.hibernate.DynamicDataSource">
+    <property name="targetDataSources">
+      <map key-type="java.lang.String">
+        <entry key="default" value-ref="defaultDataSource" />
+      </map>
+    </property>
+    <property name="defaultTargetDataSource" ref="defaultDataSource" />
+  </bean>
+  <!-- 多数据源 -->
+
+  <!-- his使用的数据源配置 -->
+  <bean id="hisDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+    destroy-method="close">
+    <!-- Connection Info -->
+    <property name="driverClassName" value="${hisdata.jdbc.driver}" />
+    <property name="url" value="${hisdata.jdbc.url}" />
+    <property name="username" value="${hisdata.jdbc.username}" />
+    <property name="password" value="${hisdata.jdbc.password}" />
+    <property name="defaultAutoCommit" value="true" />
+  </bean>
+
+  <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource">
+      <ref local="dataSource" />
+    </property>
+  </bean>
+
+  <bean id="hisJdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <property name="dataSource">
+      <ref local="hisDataSource" />
+    </property>
+  </bean>
+
+  <!-- 开发时设定时间扫描配置mapper -->
+  <bean id="sqlSessionFactory" class="org.ssh.pm.orm.mybatis.RefreshableSqlSessionFactoryBean">
+    <property name="dataSource" ref="hisDataSource" />
+    <!-- 显式指定Mapper文件位置 -->
+    <property name="mapperLocations" value="classpath:/mybatis/*Mapper.xml" />
+    <property name="interval" value="10000" />
+  </bean>
+  <!-- 扫描basePackage下所有以@MyBatisRepository标识的 接口 -->
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="basePackage" value="org.ssh.pm" />
+    <property name="annotationClass" value="org.ssh.pm.orm.mybatis.MyBatisRepository" />
+  </bean>
+
+  <bean id="demoService" class="org.ssh.dubbo.demo.provider.DemoServiceImpl">
+    <property name="jdbcTemplate">
+      <ref local="jdbcTemplate" />
+    </property>
+  </bean>
+
+  <dubbo:service interface="org.ssh.dubbo.demo.DemoService"
+    ref="demoService" />
 
 </beans>

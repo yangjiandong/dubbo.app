@@ -20,5 +20,12 @@ dubbo - app
       </exclusions>
     </dependency>
     
+    3. provider
+    test/resources/dubbo.properties
+dubbo.protocol.name=dubbo
+dubbo.protocol.port=20880
+dubbo.service.loadbalance=roundrobin
+
+    --采用dubbo协议
     
     --END    

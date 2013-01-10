@@ -14,6 +14,13 @@
     <skip_maven_deploy>false</skip_maven_deploy>
     <dubbo.version>2.4.8</dubbo.version>
     <spring.version>3.0.6.RELEASE</spring.version>
+    <mybatis.version>3.1.1</mybatis.version>
+    <h2.version>1.2.142</h2.version>
+    <hsqldb.version>1.8.0.7</hsqldb.version>
+    <mysql.version>5.1.6</mysql.version>
+    <mssql.jtds.version>1.2.2</mssql.jtds.version>
+    <oracle.version>10.2.0.2.0</oracle.version>
+
   </properties>
   <dependencies>
     <dependency>
@@ -46,6 +53,37 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
       <version>${spring.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+
+    <!-- mybatis -->
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis</artifactId>
+      <version>${mybatis.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mybatis</groupId>
+      <artifactId>mybatis-spring</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>net.sourceforge.jtds</groupId>
+      <artifactId>jtds</artifactId>
+      <version>${mssql.jtds.version}</version>
+      <scope>runtime</scope>
     </dependency>
 
     <dependency>
