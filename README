@@ -1,0 +1,24 @@
+dubbo - app
+================
+
+2013.01.10
+-----------
+
+    1. eclipse
+    mvn eclipse:eclipse
+    
+    2. use spring3.0.6
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>dubbo</artifactId>
+      <version>${project.parent.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    
+    
+    --END    
