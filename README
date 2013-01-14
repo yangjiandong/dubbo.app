@@ -28,4 +28,6 @@ dubbo.service.loadbalance=roundrobin
 
     --采用dubbo协议
     
+    4. 加入spring jdbc,mybatis
+    
     --END    
