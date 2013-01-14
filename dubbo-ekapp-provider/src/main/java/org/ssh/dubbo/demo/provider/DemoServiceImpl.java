@@ -12,8 +12,10 @@ import org.ssh.dubbo.demo.DemoService;
 import org.ssh.dubbo.demo.model.Hz;
 import org.ssh.dubbo.demo.utils.JdbcPaginationHelper;
 
+import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.dubbo.rpc.RpcContext;
 
+//@Service(version="1.0.0")
 public class DemoServiceImpl implements DemoService<Hz> {
     private JdbcTemplate jdbcTemplate;
 
@@ -37,6 +39,9 @@ public class DemoServiceImpl implements DemoService<Hz> {
     }
 
     public List<Hz> getPageItems(int page) {
+        System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] getPageItems " + page
+                + ", request from consumer: " + RpcContext.getContext().getRemoteAddress());
+
         org.ssh.dubbo.demo.utils.JdbcPaginationHelper<Hz> ph = new JdbcPaginationHelper<Hz>();
         return ph.fetchPage(jdbcTemplate, "SELECT count(*) FROM t_hzk ", "SELECT id,hz,py,wb FROM t_hzk",
                 null, page, 20, userMapper).getPageItems();

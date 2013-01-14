@@ -1,6 +1,71 @@
 dubbo - app
 ================
 
+2013.01.13
+----------
+
+    1. 负载均衡
+    
+    在集群负载均衡时，Dubbo提供了多种均衡策略，缺省为random随机调用。
+    可以自行扩展负载均衡策略，参见：负载均衡扩展
+    Random LoadBalance 随机，按权重设置随机概率。在一个截面上碰撞的概率高，但调用量越大分布越均匀，而且按概率使用权重后也比较均匀，有利于动态调整提供者权重。
+    RoundRobin LoadBalance 轮循，按公约后的权重设置轮循比率。存在慢的提供者累积请求问题，比如：第二台机器很慢，但没挂，当请求调到第二台时就卡在那，久而久之，所有请求都卡在调到第二台上。
+    LeastActive LoadBalance 最少活跃调用数，相同活跃数的随机，活跃数指调用前后计数差。使慢的提供者收到更少请求，因为越慢的提供者的调用前后计数差会越大。
+    ConsistentHash LoadBalance 一致性Hash，相同参数的请求总是发到同一提供者。
+    当某一台提供者挂时，原本发往该提供者的请求，基于虚拟节点，平摊到其它提供者，不会引起剧烈变动。
+    算法参见：http://en.wikipedia.org/wiki/Consistent_hashing。
+    缺省只对第一个参数Hash，如果要修改，请配置<dubbo:parameter key="hash.arguments" value="0,1" />
+    缺省用160份虚拟节点，如果要修改，请配置<dubbo:parameter key="hash.nodes" value="320" />
+    
+    2 . 多版本
+    
+    当一个接口实现，出现不兼容升级时，可以用版本号过渡，版本号不同的服务相互间不引用。
+    在低压力时间段，先升级一半提供者为新版本
+    再将所有消费者升级为新版本
+    然后将剩下的一半提供者升级为新版本
+
+    <dubbo:service interface="com.foo.BarService" version="1.0.0" />
+    
+    3. 结果缓存
+    
+    结果缓存，用于加速热门数据的访问速度，Dubbo提供声明式缓存，以减少用户加缓存的工作量。
+    example:
+    https://github.com/alibaba/dubbo/tree/master/dubbo-test/dubbo-test-examples/src/main/java/com/alibaba/dubbo/examples/cache
+    
+    lru 基于最近最少使用原则删除多余缓存，保持最热的数据被缓存。
+    threadlocal 当前线程缓存，比如一个页面渲染，用到很多portal，每个portal都要去查用户信息，通过线程缓存，可以减少这种多余访问。
+    jcache 与JSR107集成，可以桥接各种缓存实现。
+    缓存类型可扩展，参见：CacheFactory扩展点
+
+配置如：
+
+<dubbo:reference interface="com.foo.BarService" cache="lru" />
+或：
+
+<dubbo:reference interface="com.foo.BarService">
+    <dubbo:method name="findBar" cache="lru" />
+</dubbo:reference>
+
+    4. 异步调用
+    
+    5. 参数回调
+    
+    6. 并发控制
+    
+    7. 令牌验证
+    
+    8. 路由规则
+    
+    9. 基准测试工具包
+    http://code.alibabatech.com/wiki/download/attachments/7669075/dubbo.benchmark-2.0.14.tar.gz
+
+2013.01.12
+-----------
+
+    1. http://code.alibabatech.com/wiki/display/dubbo/User+Guide-zh
+    注解配置
+    --没成功
+    
 2013.01.10
 -----------
 
