@@ -26,6 +26,23 @@
     </property>
   </bean>
 
+   <!-- 以静态变量保存ApplicationContext -->
+  <bean class="org.ssh.dubbo.demo.utils.SpringContextHolder"
+    lazy-init="false" />
+
+  <!-- sys config info -->
+  <bean id="sysConfigData" class="org.ssh.pm.SysConfigData">
+    <property name="productName" value="${sysconfig.productName}"/>
+    <property name="version" value="${sysconfig.version}"/>
+    <property name="buildId" value="${sysconfig.buildId}"/>
+    <property name="copyright" value="${sysconfig.copyright}"/>
+    <property name="vendor" value="${sysconfig.vendor}"/>
+    <property name="year" value="${sysconfig.year}"/>
+    <property name="website" value="${sysconfig.website}"/>
+    <property name="sshConfigDir" value="${SSH_CONFIG_DIR}"/>
+    <property name="runMode" value="DEV"/>
+  </bean>
+
   <!-- 多数据源 -->
   <bean id="parentDataSource" class="org.apache.commons.dbcp.BasicDataSource"
     destroy-method="close">
@@ -96,7 +113,7 @@
   </bean>
 
   <dubbo:service interface="org.ssh.dubbo.demo.DemoService"
-    ref="demoService" />
+    ref="demoService" version="${sysconfig.version}"/>
 
   <!-- 扫描注解包路径，多个包用逗号分隔，不填pacakge表示扫描当前ApplicationContext中所有的类 -->
   <!--

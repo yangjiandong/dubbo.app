@@ -11,8 +11,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.ssh.dubbo.demo.DemoService;
 import org.ssh.dubbo.demo.model.Hz;
 import org.ssh.dubbo.demo.utils.JdbcPaginationHelper;
+import org.ssh.dubbo.demo.utils.SpringContextHolder;
+import org.ssh.pm.SysConfigData;
 
-import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.dubbo.rpc.RpcContext;
 
 //@Service(version="1.0.0")
@@ -33,8 +34,11 @@ public class DemoServiceImpl implements DemoService<Hz> {
     }
 
     public String sayHello(String name) {
+        SysConfigData sys = (SysConfigData)SpringContextHolder.getBean("sysConfigData");
+
         System.out.println("[" + new SimpleDateFormat("HH:mm:ss").format(new Date()) + "] Hello " + name
-                + ", request from consumer: " + RpcContext.getContext().getRemoteAddress());
+                + ", request from consumer: " + RpcContext.getContext().getRemoteAddress()
+                + ", provider version: " + sys.getVersion());
         return "Hello " + name + ", response form provider: " + RpcContext.getContext().getLocalAddress();
     }
 
