@@ -32,5 +32,6 @@
 		<module>dubbo-ekapp-api</module>
 		<module>dubbo-ekapp-provider</module>
 		<module>dubbo-ekapp-consumer</module>
+		<module>dubbo-monitor-simple</module>
 	</modules>
 </project>
