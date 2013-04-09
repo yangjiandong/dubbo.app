@@ -24,12 +24,12 @@ public class DemoServiceImpl implements DemoService<Hz> {
 
     private class UserMapper implements RowMapper<Hz> {
         public Hz mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Hz user = new Hz();
-            user.setId(rs.getLong("id"));
-            user.setHz(rs.getString("hz"));
-            user.setWb(rs.getString("wb"));
-            user.setPy(rs.getString("py"));
-            return user;
+            Hz hz = new Hz();
+            hz.setId(rs.getLong("id"));
+            hz.setHz(rs.getString("hz"));
+            hz.setWb(rs.getString("wb"));
+            hz.setPy(rs.getString("py"));
+            return hz;
         }
     }
 

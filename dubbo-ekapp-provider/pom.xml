@@ -24,6 +24,11 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.sshapp</groupId>
+      <artifactId>sshapp-mobileCommon</artifactId>
+      <version>6.0</version>
+    </dependency>
+    <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>dubbo-ekapp-api</artifactId>
       <version>${project.parent.version}</version>
@@ -84,6 +89,13 @@
       <artifactId>jtds</artifactId>
       <version>${mssql.jtds.version}</version>
       <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.oracle</groupId>
+      <artifactId>ojdbc6</artifactId>
+      <version>11.2.0</version>
+      <type>jar</type>
     </dependency>
 
     <dependency>
@@ -182,6 +194,13 @@
       <groupId>javax.cache</groupId>
       <artifactId>cache-api</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>net.sf.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+      <version>1.6.2</version>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>

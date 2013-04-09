@@ -95,7 +95,7 @@
 
   <!-- 开发时设定时间扫描配置mapper -->
   <bean id="sqlSessionFactory" class="org.ssh.pm.orm.mybatis.RefreshableSqlSessionFactoryBean">
-    <property name="dataSource" ref="hisDataSource" />
+    <property name="dataSource" ref="dataSource" />
     <!-- 显式指定Mapper文件位置 -->
     <property name="mapperLocations" value="classpath:/mybatis/*Mapper.xml" />
     <property name="interval" value="10000" />
@@ -106,14 +106,35 @@
     <property name="annotationClass" value="org.ssh.pm.orm.mybatis.MyBatisRepository" />
   </bean>
 
+  <bean id="mDataDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+  <property name="mapperInterface" value="org.ssh.dubbo.demo.dao.mybatis.MDataDao" />
+  <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+  </bean>
+
+  <bean id="jdbcDao" class="org.ssh.dubbo.demo.dao.JdbcDao">
+    <property name="jdbcTemplate" ref="jdbcTemplate"/>
+  </bean>
+
+  <!--
   <bean id="demoService" class="org.ssh.dubbo.demo.provider.DemoServiceImpl">
     <property name="jdbcTemplate">
       <ref local="jdbcTemplate" />
     </property>
   </bean>
-
   <dubbo:service interface="org.ssh.dubbo.demo.DemoService"
     ref="demoService" version="${sysconfig.version}"/>
+  -->
+
+  <bean id="nurseMobService" class="org.ssh.dubbo.demo.provider.NurseMobServiceImpl">
+    <property name="jdbcTemplate">
+      <ref local="jdbcTemplate" />
+    </property>
+    <property name="jdbcDao" ref = "jdbcDao"/>
+    <property name="mDataDao" ref = "mDataDao"/>
+  </bean>
+
+  <dubbo:service interface="org.ssh.dubbo.demo.NurseMobService"
+    ref="nurseMobService" version="${sysconfig.version}"/>
 
   <!-- 扫描注解包路径，多个包用逗号分隔，不填pacakge表示扫描当前ApplicationContext中所有的类 -->
   <!--
