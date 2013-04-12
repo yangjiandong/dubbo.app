@@ -115,7 +115,6 @@
     <property name="jdbcTemplate" ref="jdbcTemplate"/>
   </bean>
 
-  <!--
   <bean id="demoService" class="org.ssh.dubbo.demo.provider.DemoServiceImpl">
     <property name="jdbcTemplate">
       <ref local="jdbcTemplate" />
@@ -123,7 +122,6 @@
   </bean>
   <dubbo:service interface="org.ssh.dubbo.demo.DemoService"
     ref="demoService" version="${sysconfig.version}"/>
-  -->
 
   <bean id="nurseMobService" class="org.ssh.dubbo.demo.provider.NurseMobServiceImpl">
     <property name="jdbcTemplate">

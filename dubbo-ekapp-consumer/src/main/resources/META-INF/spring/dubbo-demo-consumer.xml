@@ -9,4 +9,6 @@
    <!-- version="1.0.0" -->
    <dubbo:reference id="demoService" interface="org.ssh.dubbo.demo.DemoService" version="*"/>
 
+   <dubbo:reference id="nurseMobService" interface="org.ssh.dubbo.demo.NurseMobService" version="*"/>
+
 </beans>
